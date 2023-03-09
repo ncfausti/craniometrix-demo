@@ -1,6 +1,6 @@
 # connect-four
 
-demo react project for Crainiometrix
+demo react project for Craniometrix
 
 To run: `yarn start`
 
