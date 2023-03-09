@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Board.css";
+import "./App.css";
 // You should display the current player’s turn
 // - Only one disc can be dropped in each turn
 // - For each turn, a player should select a column and their disc should drop to the
@@ -125,19 +125,19 @@ export default function App(props: any) {
     winner: "",
   });
 
-  const handleClick = () => {
+  const handleClick = (col: number) => {
     // Create a copy of the gameState object
     const updatedGameState = { ...gameState };
     const currentTurn = updatedGameState.turn;
 
     // Update the game state by dropping a disc
-    updatedGameState.board = dropDisc(0, currentTurn, gameState.board);
+    updatedGameState.board = dropDisc(col, currentTurn, gameState.board);
 
     // Check for winner
     updatedGameState.winner = checkWinner(currentTurn, updatedGameState.board);
 
     // Update who's turn it is
-    // updatedGameState.turn = gameState.turn === RED ? YELLOW : RED;
+    updatedGameState.turn = gameState.turn === RED ? YELLOW : RED;
 
     // Set new gameState
     setGameState(updatedGameState);
@@ -148,14 +148,21 @@ export default function App(props: any) {
       connect-four
       <p>Player's turn: {gameState.turn}</p>
       <p>Winner: {gameState.winner}</p>
-      <button
-        onClick={handleClick}
-        disabled={gameState.winner === "" ? false : true}
-      >
-        swap turn
-      </button>
-      <div className='Board'>
-        <ConnectFour board={gameState.board} />
+      <div className="Game">
+        <div className='Buttons'>
+          {new Array(BOARD_WIDTH).fill(null).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handleClick(i)}
+              disabled={gameState.winner === "" ? false : true}
+            >
+              {i}
+            </button>
+          ))}
+        </div>
+        <div className='Board'>
+          <ConnectFour board={gameState.board} />
+        </div>
       </div>
     </div>
   );
