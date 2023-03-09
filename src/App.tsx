@@ -20,7 +20,7 @@ const ConnectFour = (props: { board: string[][] }) => {
 
   const renderBoard = () => {
     return board.map((row, rowIndex) => (
-      <div className='Board' key={rowIndex}>
+      <div key={rowIndex}>
         {row.map((cell, columnIndex) => (
           <span key={`${rowIndex}-${columnIndex}`} className='cell'>
             {board[rowIndex][columnIndex] === null
@@ -32,7 +32,7 @@ const ConnectFour = (props: { board: string[][] }) => {
     ));
   };
 
-  return <div className='board'>{renderBoard()}</div>;
+  return <div>{renderBoard()}</div>;
 };
 
 export default function App(props: any) {
@@ -93,12 +93,11 @@ export default function App(props: any) {
   };
 
   const checkWinner = (player: string, board: string[][]) => {
-    if (checkHorizontal(player, board)) return true;
-    if (checkVertical(player, board)) return true;
-    if (checkDiagonal(player, board)) return true;
+    if (checkHorizontal(player, board)) return player;
+    if (checkVertical(player, board)) return player;
+    if (checkDiagonal(player, board)) return player;
 
-    // if no winning combinations are found, return false
-    return false;
+    return "";
   };
 
   // use dropDisc to return a new game board state
@@ -108,11 +107,10 @@ export default function App(props: any) {
       if (board[row][column] === null) {
         // found an empty slot, drop the disc in this position
         board[row][column] = player;
-
-        console.log(`Winner? ${checkWinner(player, board)}`);
         return board; // return the row number where the disc was placed
       }
     }
+
     // if the column is full, return new board
     return new Array(BOARD_HEIGHT)
       .fill(null)
@@ -135,6 +133,9 @@ export default function App(props: any) {
     // Update the game state by dropping a disc
     updatedGameState.board = dropDisc(0, currentTurn, gameState.board);
 
+    // Check for winner
+    updatedGameState.winner = checkWinner(currentTurn, updatedGameState.board);
+
     // Update who's turn it is
     // updatedGameState.turn = gameState.turn === RED ? YELLOW : RED;
 
@@ -145,9 +146,14 @@ export default function App(props: any) {
   return (
     <div className='App'>
       connect-four
-      <p className='Board'>Player's turn: {gameState.turn}</p>
+      <p>Player's turn: {gameState.turn}</p>
       <p>Winner: {gameState.winner}</p>
-      <button onClick={handleClick}>swap turn</button>
+      <button
+        onClick={handleClick}
+        disabled={gameState.winner === "" ? false : true}
+      >
+        swap turn
+      </button>
       <div className='Board'>
         <ConnectFour board={gameState.board} />
       </div>
