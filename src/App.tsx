@@ -4,13 +4,10 @@ import "./App.css";
 // - Only one disc can be dropped in each turn
 // - For each turn, a player should select a column and their disc should drop to the
 // next empty spot in that column
-
 // - Players must connect 4 of their colored discs in a row to win (either horizontally,
 // vertically, or diagonally)
-
 // - The game ends when there is a 4-in-a-row, or if all spots are occupied by a disc
 // (stalemate)
-
 // - When the game ends, you should stop receiving input from either user, display a
 // message indicating who won the game (or that it was a stalemate game), and be
 // able to start a new game
@@ -92,10 +89,36 @@ export default function App(props: any) {
     return false;
   };
 
+  const checkStalemate = (board: string[][]) => {
+    // check if there are any empty cells left on the board
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        if (board[row][col] === null) {
+          return false;
+        }
+      }
+    }
+    // if all cells are filled, return true (stalemate)
+    return true;
+  };
+
+  const isColumnFilled = (board: string[][], column: number) => {
+    // iterate over cells in the specified column
+    for (let row = 0; row < board.length; row++) {
+      if (board[row][column] === null) {
+        // if any cell in the column is empty, return false
+        return false;
+      }
+    }
+    // if all cells in the column are filled, return true
+    return true;
+  };
+
   const checkWinner = (player: string, board: string[][]) => {
     if (checkHorizontal(player, board)) return player;
     if (checkVertical(player, board)) return player;
     if (checkDiagonal(player, board)) return player;
+    if (checkStalemate(board)) return "Stalemate";
 
     return "";
   };
@@ -147,16 +170,27 @@ export default function App(props: any) {
     <div className='App'>
       connect-four
       <p>Player's turn: {gameState.turn}</p>
-      <p>Winner: {gameState.winner}</p>
-      <div className="Game">
+      {gameState.winner && <p>Winner: {gameState.winner} </p>}
+      <button
+        className={"Restart"}
+        disabled={gameState.winner === ""}
+        onClick={() => window.location.reload()}
+      >
+        Restart Game
+      </button>
+      <div className='Game'>
         <div className='Buttons'>
           {new Array(BOARD_WIDTH).fill(null).map((_, i) => (
             <button
               key={i}
               onClick={() => handleClick(i)}
-              disabled={gameState.winner === "" ? false : true}
+              disabled={
+                gameState.winner !== "" || isColumnFilled(gameState.board, i)
+                  ? true
+                  : false
+              }
             >
-              {i}
+              {"🫳"}
             </button>
           ))}
         </div>

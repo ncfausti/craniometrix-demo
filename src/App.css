@@ -42,8 +42,31 @@
   width: 100%;
 }
 
+.Restart {
+  cursor: pointer;
+}
+
+.Restart:disabled {
+  display: none;
+}
+
 button {
-  font-size: 64px;
+  font-size: 36px;
+  opacity: 20%;
+  cursor: grab;
+  background-color: white;
+}
+
+body {
+  background: url('https://wallpaperaccess.com/full/20630.jpg');
+  background-size: auto;
+  background-repeat: no-repeat;
+}
+button:disabled:hover {
+  cursor: not-allowed;
+}
+button:hover {
+  opacity: 100%;
 }
 
 @keyframes App-logo-spin {
