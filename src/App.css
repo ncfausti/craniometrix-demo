@@ -27,16 +27,36 @@
 .App-link {
   color: #61dafb;
 }
+.blink {
+  animation: blink 1s infinite;
+}
 
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
 .Board {
-  font-size: 40px;
+  font-size: 48px;
   background-color: blue;
   display: inline-block;
   border-radius: 3%;
   padding: 1%;
-  box-shadow: 3px 3px 2px 1px rgba(0, 0, 255, .8);
+  box-shadow: 3px 3px 2px 1px rgba(0, 0, 0, .5);
 }
 
+.EndGame {
+  font-size: 48px;
+}
+
+.EndGame button {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.EndGame button:disabled {
+  display:none;
+}
 
 .Game {
   width: 100%;
@@ -54,25 +74,25 @@
 .ScoreBoard {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 24px;
-  margin-bottom: 5%;
-  border: 1px solid gray;
+  margin-bottom: 12%;
+  /* border: 1px solid gray; */
 }
 
 .🔴 {
-  box-shadow: 3px 3px 2px 1px rgba(255, 0, 0, .5);
+  box-shadow: 0px 24px 32px -10px rgb(255 0 0 / 30%);
 }
 
 .🟡 {
-  box-shadow: 3px 3px 2px 1px rgba(255, 225, 0, 0.5);
+  box-shadow: 0px 24px 32px -10px rgb(255 255 0 / 30%);
 }
 
 
 .Winner.🔴 {
-  box-shadow: 3px 3px 2px 1px rgba(255, 0, 0, .5);
+  box-shadow: 0px 24px 32px -10px rgb(255 0 0 / 30%);
 }
 
 .Winner.🟡 {
-  box-shadow: 3px 3px 2px 1px rgba(255, 225, 0, 0.5);
+  box-shadow: 0px 24px 32px -10px rgb(255 255 0 / 30%);
 }
 
 button {
@@ -101,5 +121,19 @@ button:hover {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@media only screen and (min-width: 769px) {
+  .Buttons {
+    flex-basis: 
+  }
+  .Board {
+
+  }
+}
+@media only screen and (max-width: 768px) {
+  .button {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 }

@@ -1,148 +1,18 @@
 import React, { useState } from "react";
 import "./App.css";
-
-const ConnectFour = (props: { board: string[][] }) => {
-  const { board } = props;
-
-  const renderBoard = () => {
-    return board.map((row, rowIndex) => (
-      <div key={rowIndex}>
-        {row.map((cell, columnIndex) => (
-          <span key={`${rowIndex}-${columnIndex}`} className='cell'>
-            {board[rowIndex][columnIndex] === null
-              ? "⚪️"
-              : board[rowIndex][columnIndex]}{" "}
-          </span>
-        ))}
-      </div>
-    ));
-  };
-
-  return <div>{renderBoard()}</div>;
-};
+import ConnectFour from "./ConnectFour";
+import {
+  BOARD_HEIGHT,
+  BOARD_WIDTH,
+  checkWinner,
+  dropDisc,
+  isColumnFilled,
+  RED,
+  YELLOW,
+} from "./Rules";
+import Scoreboard from "./Scoreboard";
 
 export default function App(props: any) {
-  const RED = "🔴";
-  const YELLOW = "🟡";
-  const BOARD_HEIGHT = 6;
-  const BOARD_WIDTH = 7;
-
-  // check for horizontal wins
-  const checkHorizontal = (player: string, board: string[][]) => {
-    for (let row = 0; row < board.length; row++) {
-      for (let col = 0; col <= board[row].length - 4; col++) {
-        if (
-          board[row][col] === player &&
-          board[row][col + 1] === player &&
-          board[row][col + 2] === player &&
-          board[row][col + 3] === player
-        ) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  // check for vertical wins
-  const checkVertical = (player: string, board: string[][]) => {
-    for (let row = 0; row <= board.length - 4; row++) {
-      for (let col = 0; col < board[row].length; col++) {
-        if (
-          board[row][col] === player &&
-          board[row + 1][col] === player &&
-          board[row + 2][col] === player &&
-          board[row + 3][col] === player
-        ) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  // check for diagonal wins (bottom-left to top-right)
-  const checkDiagonal = (player: string, board: string[][]) => {
-    for (let row = 0; row <= board.length - 4; row++) {
-      for (let col = 0; col <= board[row].length - 4; col++) {
-        if (
-          board[row][col] === player &&
-          board[row + 1][col + 1] === player &&
-          board[row + 2][col + 2] === player &&
-          board[row + 3][col + 3] === player
-        ) {
-          return true;
-        }
-      }
-    }
-
-    // check for diagonal wins (top-left to bottom-right)
-    for (let row = 3; row < board.length; row++) {
-      for (let col = 0; col <= board[row].length - 4; col++) {
-        if (
-          board[row][col] === player &&
-          board[row - 1][col + 1] === player &&
-          board[row - 2][col + 2] === player &&
-          board[row - 3][col + 3] === player
-        ) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  const checkStalemate = (board: string[][]) => {
-    // check if there are any empty cells left on the board
-    for (let row = 0; row < board.length; row++) {
-      for (let col = 0; col < board[row].length; col++) {
-        if (board[row][col] === null) {
-          return false;
-        }
-      }
-    }
-    // if all cells are filled, return true (stalemate)
-    return true;
-  };
-
-  const isColumnFilled = (board: string[][], column: number) => {
-    // iterate over cells in the specified column
-    for (let row = 0; row < board.length; row++) {
-      if (board[row][column] === null) {
-        // if any cell in the column is empty, return false
-        return false;
-      }
-    }
-    // if all cells in the column are filled, return true
-    return true;
-  };
-
-  const checkWinner = (player: string, board: string[][]) => {
-    if (checkHorizontal(player, board)) return player;
-    if (checkVertical(player, board)) return player;
-    if (checkDiagonal(player, board)) return player;
-    if (checkStalemate(board)) return "Stalemate";
-
-    return "";
-  };
-
-  // use dropDisc to return a new game board state
-  const dropDisc = (column: number, player: string, board: string[][]) => {
-    // start at the bottom of the column and search for the first empty slot
-    for (let row = board.length - 1; row >= 0; row--) {
-      if (board[row][column] === null) {
-        // found an empty slot, drop the disc in this position
-        board[row][column] = player;
-        return board; // return the row number where the disc was placed
-      }
-    }
-
-    // if the column is full, return new board
-    return new Array(BOARD_HEIGHT)
-      .fill(null)
-      .map(() => new Array(BOARD_WIDTH).fill(null));
-  };
-
   const [gameState, setGameState] = useState({
     turn: RED,
     board: new Array(BOARD_HEIGHT)
@@ -169,31 +39,16 @@ export default function App(props: any) {
     setGameState(updatedGameState);
   };
 
-  // Change the color of the scoreboard shadow based on
-  // player's turn or winner
-  const scoreboardClass =
-    gameState.winner === ""
-      ? `ScoreBoard ${gameState.turn}`
-      : `ScoreBoard Winner ${gameState.winner}`;
-
   return (
-    <div className='App'>
-      <div className={scoreboardClass}>
-        <strong>connect-four</strong>
-        <p>Player's turn: {gameState.turn}</p>
-        {gameState.winner && <p>Winner: {gameState.winner} </p>}
-        <button
-          className={"Restart"}
-          disabled={gameState.winner === ""}
-          onClick={() => window.location.reload()}
-        >
-          Restart Game
-        </button>
-      </div>
-      <div className='Game'>
-        <div className='Buttons'>
+    <div className='flex flex-col justify-center'>
+      <Scoreboard winner={gameState.winner} turn={gameState.turn} />
+      <div className='flex flex-col justify-center'>
+        {/* Buttons to drop in specific column */}
+        <div className='Buttons flex'>
           {new Array(BOARD_WIDTH).fill(null).map((_, i) => (
             <button
+              type='button'
+              className='flex-grow basis-0 rounded-l-md bg-white  py-2 font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10'
               key={i}
               onClick={() => handleClick(i)}
               disabled={
@@ -206,10 +61,26 @@ export default function App(props: any) {
             </button>
           ))}
         </div>
-        <div className='Board'>
-          <ConnectFour board={gameState.board} />
-        </div>
+        {/* / Drop Buttons */}
+        <ConnectFour board={gameState.board} />
+        <RestartGame winner={gameState.winner} />
       </div>
     </div>
   );
 }
+
+const RestartGame = (props: { winner: string }) => {
+  const { winner } = props;
+  return (
+    <div className='EndGame'>
+      <button
+        type='button'
+        className='bg-white py-2.5 px-3.5 font-semibold shadow-sm w-full'
+        disabled={winner === ""}
+        onClick={() => window.location.reload()}
+      >
+        Restart Game
+      </button>
+    </div>
+  );
+};
