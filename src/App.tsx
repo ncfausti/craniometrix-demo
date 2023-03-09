@@ -1,16 +1,5 @@
 import React, { useState } from "react";
 import "./App.css";
-// You should display the current player’s turn
-// - Only one disc can be dropped in each turn
-// - For each turn, a player should select a column and their disc should drop to the
-// next empty spot in that column
-// - Players must connect 4 of their colored discs in a row to win (either horizontally,
-// vertically, or diagonally)
-// - The game ends when there is a 4-in-a-row, or if all spots are occupied by a disc
-// (stalemate)
-// - When the game ends, you should stop receiving input from either user, display a
-// message indicating who won the game (or that it was a stalemate game), and be
-// able to start a new game
 
 const ConnectFour = (props: { board: string[][] }) => {
   const { board } = props;
