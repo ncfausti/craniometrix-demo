@@ -12,43 +12,16 @@ import React, { useState } from "react";
 // message indicating who won the game (or that it was a stalemate game), and be
 // able to start a new game
 
-const RED = "🔴";
-const BLUE = "🔵";
-const EMPTY = "⚪️";
+const ConnectFour = (props: { board: string[][] }) => {
+  const { board } = props;
 
-const dropDisc = (column: number, player: string, board: string | any[]) => {
-  // start at the bottom of the column and search for the first empty slot
-  for (let row = board.length - 1; row >= 0; row--) {
-    if (board[row][column] === EMPTY) {
-      // found an empty slot, drop the disc in this position
-      board[row][column] = player;
-      return row; // return the row number where the disc was placed
-    }
-  }
-  // if the column is full, return -1 to indicate that the move is invalid
-  return -1;
-};
-
-const ConnectFourBoard = () => {
-  const BOARD_HEIGHT = 6;
-  const BOARD_WIDTH = 7;
-
-  const [board, setBoard] = useState(
-    new Array(BOARD_HEIGHT).fill(null).map(() => new Array(BOARD_WIDTH).fill(EMPTY))
-  );
-
-  console.log(dropDisc(0, RED, board));
-  console.log(dropDisc(0, BLUE, board));
-  console.log(dropDisc(6, BLUE, board));
-
-  console.log(board);
   const renderBoard = () => {
     return board.map((row, rowIndex) => (
       <div key={rowIndex}>
         {row.map((cell, columnIndex) => (
-          <span key={`${rowIndex}-${columnIndex}`} className="cell">
+          <span key={`${rowIndex}-${columnIndex}`} className='cell'>
             {board[rowIndex][columnIndex] === null
-              ? EMPTY
+              ? "⚪️"
               : board[rowIndex][columnIndex]}{" "}
           </span>
         ))}
@@ -56,14 +29,59 @@ const ConnectFourBoard = () => {
     ));
   };
 
-  return <div className="board">{renderBoard()}</div>;
+  return <div className='board'>{renderBoard()}</div>;
 };
 
 export default function App(props: any) {
+  const RED = "🔴";
+  const YELLOW = "🟡";
+  const BOARD_HEIGHT = 6;
+  const BOARD_WIDTH = 7;
+
+  // use dropDisc to return a new game board state
+  const dropDisc = (column: number, player: string, board: string[][]) => {
+    // start at the bottom of the column and search for the first empty slot
+    for (let row = board.length - 1; row >= 0; row--) {
+      if (board[row][column] === null) {
+        // found an empty slot, drop the disc in this position
+        board[row][column] = player;
+        return board; // return the row number where the disc was placed
+      }
+    }
+    // if the column is full, return new board
+    return new Array(BOARD_HEIGHT)
+      .fill(null)
+      .map(() => new Array(BOARD_WIDTH).fill(null));
+  };
+
+  const [gameState, setGameState] = useState({
+    turn: RED,
+    board: new Array(BOARD_HEIGHT)
+      .fill(null)
+      .map(() => new Array(BOARD_WIDTH).fill(null)),
+    winner: "",
+  });
+
+  const handleClick = () => {
+    // Create a copy of the gameState object
+    const updatedGameState = { ...gameState };
+    const currentTurn = updatedGameState.turn;
+
+    updatedGameState.board = dropDisc(0, currentTurn, gameState.board);
+    // Update who's turn it is
+    updatedGameState.turn = gameState.turn === RED ? YELLOW : RED;
+
+    // Set new gameState
+    setGameState(updatedGameState);
+  };
+
   return (
-    <div className="App">
+    <div className='App'>
       connect-four
-      <ConnectFourBoard />
+      <p>Player's turn: {gameState.turn}</p>
+      <p>Winner: {gameState.winner}</p>
+      <button onClick={handleClick}>swap turn</button>
+      <ConnectFour board={gameState.board} />
     </div>
   );
 }
