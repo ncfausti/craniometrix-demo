@@ -4,9 +4,10 @@ demo react project for Craniometrix
 
 To run: `yarn start`
 
+[demo link](https://s3.amazonaws.com/nickfausti.com/projects/connect-four/index.html)
+
 ![screenshot](demo-screen.png)
-
-
+  
 --- 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
