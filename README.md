@@ -4,6 +4,8 @@ demo react project for Crainiometrix
 
 To run: `yarn start`
 
+![screenshot](demo-screen.png)
+
 
 --- 
 
