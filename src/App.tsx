@@ -86,6 +86,20 @@ export default function App(props: any) {
         }
       }
     }
+
+    // check for diagonal wins (top-left to bottom-right)
+    for (let row = 3; row < board.length; row++) {
+      for (let col = 0; col <= board[row].length - 4; col++) {
+        if (
+          board[row][col] === player &&
+          board[row - 1][col + 1] === player &&
+          board[row - 2][col + 2] === player &&
+          board[row - 3][col + 3] === player
+        ) {
+          return true;
+        }
+      }
+    }
     return false;
   };
 
@@ -166,18 +180,27 @@ export default function App(props: any) {
     setGameState(updatedGameState);
   };
 
+  // Change the color of the scoreboard shadow based on
+  // player's turn or winner
+  const scoreboardClass =
+    gameState.winner === ""
+      ? `ScoreBoard ${gameState.turn}`
+      : `ScoreBoard Winner ${gameState.winner}`;
+
   return (
     <div className='App'>
-      connect-four
-      <p>Player's turn: {gameState.turn}</p>
-      {gameState.winner && <p>Winner: {gameState.winner} </p>}
-      <button
-        className={"Restart"}
-        disabled={gameState.winner === ""}
-        onClick={() => window.location.reload()}
-      >
-        Restart Game
-      </button>
+      <div className={scoreboardClass}>
+        <strong>connect-four</strong>
+        <p>Player's turn: {gameState.turn}</p>
+        {gameState.winner && <p>Winner: {gameState.winner} </p>}
+        <button
+          className={"Restart"}
+          disabled={gameState.winner === ""}
+          onClick={() => window.location.reload()}
+        >
+          Restart Game
+        </button>
+      </div>
       <div className='Game'>
         <div className='Buttons'>
           {new Array(BOARD_WIDTH).fill(null).map((_, i) => (

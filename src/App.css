@@ -44,10 +44,35 @@
 
 .Restart {
   cursor: pointer;
+  margin-bottom: 1%;
 }
 
 .Restart:disabled {
   display: none;
+}
+
+.ScoreBoard {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 24px;
+  margin-bottom: 5%;
+  border: 1px solid gray;
+}
+
+.🔴 {
+  box-shadow: 3px 3px 2px 1px rgba(255, 0, 0, .5);
+}
+
+.🟡 {
+  box-shadow: 3px 3px 2px 1px rgba(255, 225, 0, 0.5);
+}
+
+
+.Winner.🔴 {
+  box-shadow: 3px 3px 2px 1px rgba(255, 0, 0, .5);
+}
+
+.Winner.🟡 {
+  box-shadow: 3px 3px 2px 1px rgba(255, 225, 0, 0.5);
 }
 
 button {
@@ -55,6 +80,7 @@ button {
   opacity: 20%;
   cursor: grab;
   background-color: white;
+  border-radius: 6px;
 }
 
 body {
